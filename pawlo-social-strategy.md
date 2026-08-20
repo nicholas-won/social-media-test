@@ -184,3 +184,34 @@ Format mix: slideshow 51.8% / wall-of-text 28.6% / green-screen 19.6% / video-ho
 - **Platform split.** The automation schedules every slot to both TikTok and Instagram equally, and per-slot destinations can't be edited post-launch. Given the 3.3x TikTok advantage, the *next* automation should weight destinations toward TikTok (or run TikTok-only for the slideshow format specifically, since that combo is the strongest performer and Instagram-slideshow is the weakest).
 - **Confirm bio links** are live (still open from Section 8, item 5 — not verifiable via API).
 - Consider deleting rather than just cancelling the 9 cut slots' underlying content if the library is getting cluttered — cancel only removed the posts, not the content items themselves.
+
+---
+
+## 12. Warmup-Status Question &amp; Supplemental TikTok Batch (2026-08-20, third follow-up session)
+
+The user asked whether the account is warm enough to ignore the posting-limit guidance, and for a concrete plan for new posts. Key facts that shaped this round:
+
+- **Not warm by the plan's own marker.** Graduation is 500 avg views/video (Section 5). Actual: TikTok 305.7 avg, Instagram 92.1 avg — TikTok is closer, Instagram isn't close. The recommendation was to push TikTok toward the tooling's ceiling while holding Instagram steady, not to abandon pacing altogether.
+- **The automation's own `perAccountPerDay` hard-caps at 3** regardless of platform technical limits (TikTok inbox allows 5/account/day, Instagram allows 25/24hr) — so "no limit" was never actually on the table through this tooling.
+- **The existing automation is still mid-flight** (runs 2026-08-20 → 2026-09-17, ~100 posts still queued), so a second full automation right now would run concurrently on the same days and risked stacking too many posts into TikTok's daily cap. Chose not to launch a second automation this round.
+
+### Actions taken
+
+1. **Zeroed `videoHookWeight`** (10% → 0%), redistributed to `slideshowWeight: 48%` / `wallOfTextWeight: 32%` / `greenScreenWeight: 20%` — video-hook has a confirmed 100% real-world failure rate (0 of 97 content items ever produced), so weighting it further was pure waste.
+2. **Rewrote all 6 active angle descriptions** with explicit variety directives (e.g. telling Fair Share/Invisible Parent/Who Fed the Dog to stop defaulting to "scam"/"receipts"/"group chat" phrasing; telling Medication to stay sincere rather than borrow comedy's clichés; telling Away From Home to stay distinct; telling Scam to vary its specific joke).
+3. **Generated 14 test pieces via ad-hoc Blitz** to check whether the directive rewrite actually worked, and personally read every one before deciding anything.
+
+### Result: partial fix, verified by direct review, not just re-running the numbers
+
+Invisible Pet Parent, Medication, and Away From Home followed their new directives cleanly — no clichéd phrasing, on-theme, no repeats. Fair Share Pet Care and Who Fed the Dog **mostly ignored their directives** — 6 of the 14 pieces still stacked "scam" + "receipts" + "group chat" in the same post, including one that opened with "unpopular opinion" despite that exact pattern being flagged as overused in Section 11. One piece had a **"Pawulo" brand-name typo**. Conclusion: angle-description rewrites are a partial lever, not a full fix — this generation model has a strong default template it falls back to regardless of explicit instruction, at least for some angles.
+
+**Disposition of the 14 generated pieces:**
+- **7 scheduled to TikTok** (1/day, 2026-08-21 through 2026-08-27, 19:00 UTC, inbox mode, auto-generated platform captions): contentIds `p9760t39e33bjh5jc5x6vradm58ctjhj`, `p971z4pa1y7p0j41g1nrfjxwrs8ct7q9`, `p9737wyf7b2vd1pdjptcjkv10n8cvrdq`, `p977rtqmgb4f23vxsd6k7s2c7h8ctxdt`, `p979x38ndz971rb0na07w22vsn8ct9ww`, `p973h3yy7b5mj6988y75ddd8g18ctpf6`, `p979gqnfcbzs0gwsd4wqknes6x8cv3xf`. This brings TikTok to 3/day total alongside the existing automation's 2/day (5/day inbox cap, so no headroom left on TikTok inbox until the automation's run ends or posting mode changes).
+- **1 deleted** (`p9736tz47t15f1zetxs9vgzj8h8ct2mj`, the "Pawulo" typo).
+- **6 left unscheduled** in the content library, not deleted, in case they're useful later: the pieces that reused the scam/receipts/group-chat template despite their angle's directive.
+
+### Open for next session
+
+- Angle-description rewrites need a stronger/different approach for Fair Share Pet Care and Who Fed the Dog specifically — consider even more explicit negative constraints, or accept that this niche's content model defaults here and plan around it rather than fighting it.
+- TikTok is at its practical inbox ceiling (5/day) until the existing automation completes (~Sept 17) or posting mode switches to direct. No more ad-hoc TikTok posts should be scheduled in this window without either cancelling something or switching mode.
+- A real second automation (with an intentionally different platform split) is still pending until TikTok crosses ~500 avg views or Instagram's underperformance is diagnosed — see Section 11.
