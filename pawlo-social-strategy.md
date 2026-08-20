@@ -142,10 +142,45 @@ A re-audit immediately before executing Section 8 found this document's Section 
 
 Angles and preferences (pre-patch) matched the doc exactly, so only the posting/content state had drifted. Given the account is already mid-campaign with real engagement (~9,500 combined views on the 50 posted items), the warmup framing in Section 5 and the reschedule/backfill actions in Section 8 items 3-4 were skipped rather than executed against outdated assumptions. Angle activation and the preference patch (items 1-2) were re-verified as still correct and applied.
 
-**Open question for next session:** what/who has kept this campaign running since the original audit (a Blitz automation, a scheduled job, another session) wasn't investigated here — worth checking before making further changes, so nothing gets double-scheduled or interrupted.
+**Resolved (see Section 11):** the campaign is automation `yx765198evc43hqgqwm1px1ga18cvb6f`, "19th August 2026 Campaign" — a 4-week, 56-slot Blitz automation the user launched separately, generated with its own preference snapshot at launch time (independent of the workspace's global Blitz preferences). It's why the queue kept filling on its own.
 
 ---
 
 ## 9. Security Note
 
 The API key shared in chat for this workspace should be treated as exposed going forward — rotate it from Fastlane Settings → API once this work is done, and prefer setting it as the `FASTLANE_API_KEY` environment variable (as this project's `.mcp.json` already expects) rather than pasting it in conversation next time.
+
+---
+
+## 11. Analytics-Driven Optimization Pass (2026-08-20, second follow-up session)
+
+The user asked for a full audit of everything queued plus an analytics-informed optimization, since the campaign had been running on automation with no Claude input on content quality. Findings and actions:
+
+### Performance analysis (50 posted posts, 9,517 combined views)
+
+| Signal | Finding |
+|---|---|
+| Platform | TikTok averages 305.7 views/post vs Instagram 92.1 — a 3.3x gap |
+| Best combo | Slideshow/TikTok (360.7 avg views); wall-of-text/TikTok close 2nd (263.9) |
+| Worst combo | Slideshow/Instagram nearly dead (18.9 avg views) despite being the largest format by volume |
+| Winning theme | "Pet outsmarts the household" comedy and fair-share resentment framing dominate the top 8 posts (7 of 8 on TikTok) |
+| Untested | Medication angle: zero organic posts ever. `video-hook` format: zero posts ever, despite carrying 19-24% of generation weight the whole time — a functional failure (likely no demo video asset in the Media Bank), not bad luck |
+
+### Queue audit (56-slot "19th August 2026 Campaign" automation, 112 posts, all still SCHEDULED at audit time)
+
+Format mix: slideshow 51.8% / wall-of-text 28.6% / green-screen 19.6% / video-hook 0%. Heavy template repetition across the generated copy: "scam" appeared 39x, "group chat" 29x, "receipts" 28x across just 56 items. Specific duplicates found: 3 slots shared a verbatim line ("the group chat has six messages and somehow no answer"), 4 opened with "unpopular opinion:", and 6 green-screen slots were interchangeable "receipts prove X" one-liners.
+
+**Tool constraint discovered:** `reroll_automation_slot` and `update_automation_slot` only work while an automation is in `REVIEW` status. This automation was already `COMPLETED` (launched/built/scheduled), so already-queued slot content could not be edited or regenerated through the API — only cancelled outright.
+
+### Actions taken (user confirmed each)
+
+1. **Preference patch** — content-type weights moved from 40/21/20/19 to `slideshowWeight: 45`, `wallOfTextWeight: 30`, `greenScreenWeight: 15`, `videoHookWeight: 10` (proven formats up, weak/non-functional format down). Applies to future generation only.
+2. **Angle weights** — moved off the even ~16.7% split to a data-informed tilt: Scam 25 / Fair Share Pet Care 20 / Invisible Pet Parent 15 / Who Fed the Dog 15 / Medication 15 / Away From Home 10. Comedy gets the biggest weight given the top-post evidence; medication and away-from-home kept meaningful (not starved) despite zero real post history yet, since sample sizes are still small.
+3. **Cancelled 18 posts** (9 duplicate/near-duplicate slots × 2 platforms each) from the live queue to cut the worst repetition: the 2 extra "six messages no answer" slots, 3 of the 4 "unpopular opinion" slots, and 4 of the 6 interchangeable green-screen "receipts" one-liners. Queue is now 100 scheduled posts, down from 118. This was a subtractive fix (remove the worst duplicates) since additive fixes (reroll/regenerate) weren't available post-launch.
+
+### Not done / open for a future session
+
+- **video-hook is non-functional.** Check Fastlane Settings → Media Bank for a demo video; without one this format will keep failing silently regardless of its weight.
+- **Platform split.** The automation schedules every slot to both TikTok and Instagram equally, and per-slot destinations can't be edited post-launch. Given the 3.3x TikTok advantage, the *next* automation should weight destinations toward TikTok (or run TikTok-only for the slideshow format specifically, since that combo is the strongest performer and Instagram-slideshow is the weakest).
+- **Confirm bio links** are live (still open from Section 8, item 5 — not verifiable via API).
+- Consider deleting rather than just cancelling the 9 cut slots' underlying content if the library is getting cluttered — cancel only removed the posts, not the content items themselves.
