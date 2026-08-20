@@ -117,15 +117,32 @@ Track weekly once posting starts:
 
 ---
 
-## 8. Immediate Next Actions (needs explicit go-ahead before executing — these are billable/live actions)
+## 8. Immediate Next Actions
 
-1. Activate "The Pet Is Running a Scam" and "Away From Home" angles.
-2. Patch preferences: `mentionBusinessPercentage` → ~25-30%, `greenScreenWeight` → ~20% / `videoHookWeight` → ~19%.
-3. Re-spread the 30 already-scheduled posts from the single Sept 12-18 week across a Week-1/Week-2 warmup cadence starting this week, using TikTok inbox mode for the first ~5 TikTok posts.
-4. Start publishing from the existing 50-item content library to fill the gap, at 1 post/day/platform this week.
-5. Confirm the app-download link is live in both bio links before the first real post goes out.
+**Update (2026-08-20, follow-up session):** A re-audit before executing this section found the account had drifted materially from the snapshot above — see Section 10. Items 3-4 below were built on a stale premise and were *not* executed. Items 1-2 were re-confirmed against live state and executed.
 
-None of these were executed as part of this audit — only read calls were made against the workspace. Say the word and I'll run them (angle activation, preference patch, and reschedule) through the Fastlane API.
+1. ~~Activate "The Pet Is Running a Scam" and "Away From Home" angles.~~ **Done.** Both angles set `isActive: true` via `update_blitz_angle`.
+2. ~~Patch preferences: `mentionBusinessPercentage` → ~25-30%, `greenScreenWeight` → ~20% / `videoHookWeight` → ~19%.~~ **Done.** `update_blitz_preferences` called with `mentionBusinessPercentage: 25`, `greenScreenWeight: 20`, `videoHookWeight: 19` (slideshow 40 / wall-of-text 21 held constant so the four content-type weights still sum to 100).
+3. ~~Re-spread the 30 already-scheduled posts from the single Sept 12-18 week across a Week-1/Week-2 warmup cadence...~~ **Not executed — premise was wrong.** There is no pile-up to fix: live state shows 118 posts already scheduled at a near-daily cadence from today through Sept 18, not 30 crammed into one week. See Section 10.
+4. ~~Start publishing from the existing 50-item content library to fill the gap, at 1 post/day/platform this week.~~ **Not executed — already happening.** 50 posts have been publishing continuously since 2026-07-15 through today. See Section 10.
+5. Confirm the app-download link is live in both bio links before the first real post goes out. **Still open** — not verifiable via the API; needs manual confirmation.
+
+---
+
+## 10. Live-State Drift Found in Follow-Up Session (2026-08-20)
+
+A re-audit immediately before executing Section 8 found this document's Section 1 audit no longer matches the live `pawlohq` workspace. The gap is large enough that the original warmup/reschedule plan (Section 5, Section 8 items 3-4) does not apply as written:
+
+| Section 1 claim | Live state at re-audit |
+|---|---|
+| 0 posts published | **50 POSTED**, continuously from 2026-07-15 through 2026-08-20 (today) |
+| 30 scheduled, all in one Sept 12-18 week | **118 SCHEDULED**, spread near-daily from today through Sept 18 — the Sept 12-18 batch is real but is only the newest ~25% of what's queued |
+| ~50 content items (27/14/9) | **97 items** (48 slideshow / 32 wall-of-text / 17 green-screen), library roughly doubled |
+| — | 1 transient `FAILED` post (`instagram_disconnected_skipped`, succeeded on retry) and 3 TikTok posts sitting `IN_USER_INBOX` unclaimed — worth a look |
+
+Angles and preferences (pre-patch) matched the doc exactly, so only the posting/content state had drifted. Given the account is already mid-campaign with real engagement (~9,500 combined views on the 50 posted items), the warmup framing in Section 5 and the reschedule/backfill actions in Section 8 items 3-4 were skipped rather than executed against outdated assumptions. Angle activation and the preference patch (items 1-2) were re-verified as still correct and applied.
+
+**Open question for next session:** what/who has kept this campaign running since the original audit (a Blitz automation, a scheduled job, another session) wasn't investigated here — worth checking before making further changes, so nothing gets double-scheduled or interrupted.
 
 ---
 
