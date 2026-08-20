@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "fastlane": {
+      "type": "http",
+      "url": "https://api.usefastlane.ai/mcp",
+      "headers": { "Authorization": "Bearer ${FASTLANE_API_KEY}" }
+    }
+  }
+}
